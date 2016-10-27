@@ -1,0 +1,67 @@
+#include "voltage_reader.h"
+
+
+VoltageReader::VoltageReader(Adafruit_ADS1115 _ads, int _10v, int _30v, int _100v){
+	range_switch = new RangeSwitch(int _10v, int _30v, int _100v);
+}
+int VoltageReader::read_voltage() {
+	void read_voltage() {
+		//todo: calculate divider values here	
+		adc2 = ads.readADC_SingleEnded(2);
+		adc3 = ads.readADC_SingleEnded(3);
+		isense = ((float)adc3 * 0.1875) / 1000.0;
+		vsense = ((float)adc2 * 0.1875) / 1000.0;
+
+		//TODO: when the new sense is calculcated we need to put the ratio multiplier in 
+		//so we know when to range
+
+		//up to 10v range
+		if (vsense > 5 && VSENSE_5) {
+			VSENSE_5 = false;
+			VSENSE_10 = true;
+			digitalWrite(sw1, LOW);
+			delay(100);
+		}
+		//down to 5v range
+		else if (vsense < 5 && VSENSE_10) {
+			VSENSE_5 = true;
+			VSENSE_10 = false;
+			digitalWrite(sw1, HIGH);
+			delay(100);
+		}
+
+		/*//up to 30v range
+		else if (vsense > 5.0 && VSENSE_10){
+		VSENSE_10 = false;
+		VSENSE_30 = true;
+		digitalWrite(sw2, LOW);
+		delay(100);
+		read_voltage();
+		}
+		//down to 10v range
+		else if (vsense < 0.83 && VSENSE_30){
+		VSENSE_10 = true;
+		VSENSE_30 = false;
+		digitalWrite(sw2, HIGH);
+		delay(100);
+		read_voltage();
+		}
+
+		//up to 100v range
+		else if (vsense > 5.0 && VSENSE_30){
+		VSENSE_30 = false;
+		VSENSE_100 = true;
+		digitalWrite(sw3, LOW);
+		delay(100);
+		read_voltage();
+		}
+		//down to 30v range
+		else if (vsense < 0.83  && VSENSE_100){
+		VSENSE_30 = true;
+		VSENSE_100 = false;
+		digitalWrite(sw3, HIGH);
+		delay(100);
+		read_voltage();
+		}*/
+	}
+}
