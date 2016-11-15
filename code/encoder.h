@@ -18,12 +18,13 @@ public:
 	void update_encoder();
 	void poll_button();
 	int get_encoder_value();
+	int set_encoder_value(int encoder_value);
 private:
 	int pin_a;
 	int pin_b;
 	int pin_button;
-	volatile int lastEncoded;
-	volatile long encoderValue;
+	volatile int last_encoded;
+	volatile long encoder_value;
 	Buzzer *buzzer;
 	Button *mode_button;
 	CurrentSink *current_sink;
@@ -37,6 +38,7 @@ public:
 	static void handle_encoder_interrupt();
 	static void poll();
 	static int get_encoder_value();
+	static int set_encoder_value(int encoder_value);
 };
 
 #endif

@@ -11,8 +11,8 @@ EncoderInstance::EncoderInstance(int pin_a, int pin_b, int pin_button, Buzzer *b
 	this->buzzer = buzzer;
 	this->current_sink = current_sink;
 	this->mode_button = new Button(pin_button, true, true, 20);
-	this->encoderValue = 0;
-	this->lastEncoded = 0;
+	this->encoder_value = 0;
+	this->last_encoded = 0;
 
 	pinMode(pin_a, INPUT);
 	pinMode(pin_b, INPUT);
@@ -27,39 +27,42 @@ void EncoderInstance::update_encoder() {
 	int LSB = digitalRead(pin_b); //LSB = least significant bit
 
 	int encoded = (MSB << 1) | LSB; //converting the 2 pin value to single number
-	int sum = (lastEncoded << 2) | encoded; //adding it to the previous encoded value
+	int sum = (last_encoded << 2) | encoded; //adding it to the previous encoded value
 
 	if (sum == 0b1101 || sum == 0b0100 || sum == 0b0010 || sum == 0b1011)
 	{
-		encoderValue++;
+		encoder_value++;
 		buzzer->beep();
 	}
 	if (sum == 0b1110 || sum == 0b0111 || sum == 0b0001 || sum == 0b1000) {
-		encoderValue--;
+		encoder_value--;
 		buzzer->beep();
 	}
 
-	lastEncoded = encoded; //store this value for next time	
+	last_encoded = encoded; //store this value for next time	
 	
 
 }
 void EncoderInstance::poll_button() {
 	this->mode_button->read();
-	if (this->mode_button->wasReleased()) {
-		this->buzzer->beep();
-		if (this->current_sink->get_mode() == OFF) {
-			this->current_sink->record();
+	if (mode_button->wasReleased()) {
+		buzzer->beep();
+		if (current_sink->get_mode() == OFF) {
+			current_sink->record();
 		}
 		else if (this->current_sink->get_mode() == RECORDING) {
-			this->current_sink->sink();
+			current_sink->sink();
 		}
 		else {
-			this->current_sink->off();
+			current_sink->off();
 		}
 	}
 }
 int EncoderInstance::get_encoder_value() {
-	return this->encoderValue;
+	return encoder_value;
+}
+int EncoderInstance::set_encoder_value(int encoder_value) {
+	return this->encoder_value = encoder_value;
 }
 
 //global static pointer
@@ -79,4 +82,6 @@ void Encoder::poll() {
 int Encoder::get_encoder_value() {
 	return encoder->get_encoder_value();
 }
-
+int Encoder::set_encoder_value(int encoder_value) {
+	return encoder->set_encoder_value(encoder_value);
+}
